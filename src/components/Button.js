@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-export default function Button({ name="number", value="", onPress }: any): JSX.Element {
+export default function Button({ name="number", value="", onPress }){
     return (
         <Pressable
             style={styles[name]}

@@ -1,48 +1,37 @@
-import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
-import {
-    useEffect,
-    useRef,
-    useState
-} from 'react';
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
 import useField from '../hooks/useField';
 import useWriteHistory from '../hooks/useWriteHistory';
 import History from './History';
+import Field from './Field';
 import Button from './Button';
 
-export default function Calculator(): JSX.Element {
-    const [field, symbolicField, fields, setField]: any = useField([]);
-    const [histories, setHistories]: any = useWriteHistory([]);
+export default function Calculator() {
+    const [field, symbolicField, fields, setField] = useField([]);
+    const [histories, setHistories] = useWriteHistory([]);
 
-    const checkEvaluateError = (value: any) => {
+    const checkEvaluateError = (value=null) => {
         const errorValues = [Infinity, -Infinity, NaN, null, undefined];
         const isError = errorValues.includes(value);
         return !isError;
     };
 
-    const evaluate = (value: any) => {
+    const evaluate = (value) => {
         const evaluated = Function(`return ${value}`)();
-        const fixedEvaluated = Math.round(evaluated * 1e15) / 1e15;
+        const fixedEvaluated = Math.round(evaluated * 1e5) / 1e5;
         if (!checkEvaluateError(fixedEvaluated)) throw new Error("Error");
         const output = String(fixedEvaluated);
-        const outputs = value.split("");
-        return [output, outputs];
+        return output;
     };
 
     const solution = () => {
         try {
-            const [value, values] = evaluate(field);
+            const value = evaluate(field);
+            const values = value.split("");
             addHistory(symbolicField, value);
             setField(values);
         } catch (err) {
             Alert.alert("Error", "Invalid math expression!");
-            setField([]);
         }
     };
 
@@ -50,7 +39,7 @@ export default function Calculator(): JSX.Element {
         solution();
     };
 
-    const addNumber = (number: string) => {
+    const addNumber = (number) => {
         const values = [...fields, number];
         setField(values);
     };
@@ -61,11 +50,11 @@ export default function Calculator(): JSX.Element {
     };
  
     const clearNumber = () => {
-        const values: any = [];
+        const values = [];
         setField(values);
     };
 
-    const addHistory = (expression: any, answer: any) => {
+    const addHistory = (expression, answer) => {
         const pair = [expression, answer];
         const values = [...histories, pair];
         setHistories(values);
@@ -74,10 +63,8 @@ export default function Calculator(): JSX.Element {
     return (
         <View style={styles.calculatorContainer}>
             <History values={histories} />
-            <View style={styles.outputContainer}>
-                <Text style={styles.output}>{symbolicField}</Text>
-            </View>
-            <View>
+            <Field value={symbolicField} placeholder="0" />
+            <View style={styles.btnContainer}>
                 <View style={styles.btnRow}>
                     <Button name="remover" value="AC" onPress={clearNumber} />
                     <Button name="remover" value="DEL" onPress={delNumber} />
@@ -114,17 +101,6 @@ export default function Calculator(): JSX.Element {
 const styles = StyleSheet.create({
     calculatorContainer: {
         width: "100%"
-    },
-
-    outputContainer: {
-        paddingVertical: 5,
-        paddingHorizontal: 4
-    },
-
-    output: {
-        color: "#fff",
-        fontSize: 50,
-        textAlign: "right"
     },
 
     btnRow: {

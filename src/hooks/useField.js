@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface SymbolObj {
-    "/": string,
-    "*": string
-};
-
 const putSymbol = (value="") => {
-    const symbolObj: SymbolObj = {
+    const symbolObj = {
         "/": "÷",
         "*": "×"
     };
@@ -33,7 +28,7 @@ export default function useField(values=[]) {
         setOutput(value);
     };
 
-    const setField = (inputs: any) => {
+    const setField = (inputs=[]) => {
         numberList.current = inputs;
         toOutput();
     };
