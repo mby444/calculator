@@ -16,6 +16,25 @@ export default function Calculator() {
         return !isError;
     };
 
+    const checkInitialValue = (value="") => {
+        if (fields.length) return value;
+        const forbiddenInitials = ["0"];
+        const leadingZeroInitials = ["/", "*", "+", "."];
+        const output = forbiddenInitials.includes(value) ? [""] :
+        leadingZeroInitials.includes(value) ? ["0", value] :
+        [value];
+        return output;
+    };
+
+    const checkOperator = (value="") => {
+        const operators = ["/", "*", "-", "+", "."];
+        const lastFieldValue = fields[fields.length - 1] ?? "";
+        const valueIsOperator = operators.includes(value);
+        const lastFieldIsOperator = operators.includes(lastFieldValue);
+        const output = valueIsOperator && lastFieldIsOperator ? "" : value;
+        return output;
+    };
+
     const evaluate = (value) => {
         const evaluated = Function(`return ${value}`)();
         const fixedEvaluated = Math.round(evaluated * 1e5) / 1e5;
@@ -40,7 +59,10 @@ export default function Calculator() {
     };
 
     const addNumber = (number) => {
-        const values = [...fields, number];
+        const filterEmptyValues = (v=[]) => v.filter((w) => w !== "");
+        const checkedOperatorNumber = checkOperator(number);
+        const numbers = checkInitialValue(checkedOperatorNumber);
+        const values = filterEmptyValues([...fields, ...numbers]);
         setField(values);
     };
 
@@ -51,6 +73,7 @@ export default function Calculator() {
  
     const clearNumber = () => {
         const values = [];
+        mightClearHistory();
         setField(values);
     };
 
@@ -58,6 +81,15 @@ export default function Calculator() {
         const pair = [expression, answer];
         const values = [...histories, pair];
         setHistories(values);
+    };
+
+    const mightClearHistory = () => {
+        if (field) return;
+        clearHistory();
+    };
+
+    const clearHistory = () => {
+        setHistories([]);
     };
 
     return (
