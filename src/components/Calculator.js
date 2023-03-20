@@ -1,5 +1,4 @@
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 import useField from '../hooks/useField';
 import useWriteHistory from '../hooks/useWriteHistory';
 import History from './History';
@@ -26,13 +25,32 @@ export default function Calculator() {
         return output;
     };
 
-    const checkOperator = (value="") => {
+    const checkOperator = (fieldValues, number) => {
         const operators = ["/", "*", "-", "+", "."];
-        const lastFieldValue = fields[fields.length - 1] ?? "";
-        const valueIsOperator = operators.includes(value);
-        const lastFieldIsOperator = operators.includes(lastFieldValue);
-        const output = valueIsOperator && lastFieldIsOperator ? "" : value;
+        const lastIndexOfFieldValues = fieldValues.length - 1;
+        const isOperator1 = operators.includes(fieldValues[lastIndexOfFieldValues]);
+        const isOperator2 = operators.includes(number);
+        const isBothOperator = isOperator1 && isOperator2;
+        const newFieldValues = [...fieldValues];
+        isBothOperator ? newFieldValues.pop() : 0;
+        return newFieldValues;
+    };
+
+    const checkInitFieldValues = (values, number) => {
+        const operators = ["/", "*", "-", "+", "."];
+        const checkIsOperator = (v) => operators.includes(v);
+        const isEverythingZero = values.every((v) => v === "0");
+        const output = isEverythingZero ? checkIsOperator(number) ? ["0"] : [] : values;
         return output;
+    };
+
+    const getInputs = (number) => {
+        const fieldValues = [...fields];
+        const checkedOperatorFieldValues = checkOperator(fieldValues, number);
+        const checkedInitFieldValues = checkInitFieldValues(checkedOperatorFieldValues, number);
+        const checkedInitialNumber = checkInitialValue(number);
+        const values = [...checkedInitFieldValues, ...checkedInitialNumber];
+        return values;
     };
 
     const evaluate = (value) => {
@@ -59,10 +77,7 @@ export default function Calculator() {
     };
 
     const addNumber = (number) => {
-        const filterEmptyValues = (v=[]) => v.filter((w) => w !== "");
-        const checkedOperatorNumber = checkOperator(number);
-        const numbers = checkInitialValue(checkedOperatorNumber);
-        const values = filterEmptyValues([...fields, ...numbers]);
+        const values = getInputs(number);
         setField(values);
     };
 
