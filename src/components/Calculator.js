@@ -15,40 +15,46 @@ export default function Calculator() {
         return !isError;
     };
 
-    const checkInitialValue = (value="") => {
-        if (fields.length) return value;
+    const checkInitNumber = (value="") => {
+        const operators = ["/", "*", "+", "."];
+        const singleOperators = ["-"];
+        const checkOperator = (v) => operators.includes(v);
+        const checkSingleOperator = (v) => singleOperators.includes(v);
+        const fieldsLength = fields.length;
+        if (!((!fieldsLength) || (fieldsLength === 1 && checkSingleOperator(fields[fieldsLength - 1])))) return value;
         const forbiddenInitials = ["0"];
-        const leadingZeroInitials = ["/", "*", "+", "."];
         const output = forbiddenInitials.includes(value) ? [""] :
-        leadingZeroInitials.includes(value) ? ["0", value] :
+        checkOperator(value) ? ["0", value] :
         [value];
         return output;
     };
 
-    const checkOperator = (fieldValues, number) => {
+    const checkLastOperatorFieldValues = (fieldValues, number) => {
         const operators = ["/", "*", "-", "+", "."];
         const lastIndexOfFieldValues = fieldValues.length - 1;
-        const isOperator1 = operators.includes(fieldValues[lastIndexOfFieldValues]);
-        const isOperator2 = operators.includes(number);
-        const isBothOperator = isOperator1 && isOperator2;
+        const isOperatorFieldValue = operators.includes(fieldValues[lastIndexOfFieldValues]);
+        const isOperatorNumber = operators.includes(number);
+        const isBothOperator = isOperatorFieldValue && isOperatorNumber;
         const newFieldValues = [...fieldValues];
-        isBothOperator ? newFieldValues.pop() : 0;
+        if (isBothOperator) {
+            newFieldValues.pop();
+        }
         return newFieldValues;
     };
 
     const checkInitFieldValues = (values, number) => {
-        const operators = ["/", "*", "-", "+", "."];
+        const operators = ["/", "*", "+", "."];
         const checkIsOperator = (v) => operators.includes(v);
         const isEverythingZero = values.every((v) => v === "0");
-        const output = isEverythingZero ? checkIsOperator(number) ? ["0"] : [] : values;
+        const output = isEverythingZero ? checkIsOperator(number) ? values : [] : values;
         return output;
     };
 
     const getInputs = (number) => {
         const fieldValues = [...fields];
-        const checkedOperatorFieldValues = checkOperator(fieldValues, number);
+        const checkedOperatorFieldValues = checkLastOperatorFieldValues(fieldValues, number);
         const checkedInitFieldValues = checkInitFieldValues(checkedOperatorFieldValues, number);
-        const checkedInitialNumber = checkInitialValue(number);
+        const checkedInitialNumber = checkInitNumber(number);
         const values = [...checkedInitFieldValues, ...checkedInitialNumber];
         return values;
     };
@@ -63,7 +69,8 @@ export default function Calculator() {
 
     const solution = () => {
         try {
-            const value = evaluate(field);
+            const input = !!field.length ? field : "0";
+            const value = evaluate(input);
             const values = value.split("");
             addHistory(symbolicField, value);
             setField(values);

@@ -13,7 +13,7 @@ import Calculator from './src/components/Calculator';
 function App() {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle='light-content' />
+      <StatusBar barStyle='light-content' hidden={true} />
       <Calculator />
     </View>
   );
