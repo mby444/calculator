@@ -4,10 +4,11 @@ import useWriteHistory from '../hooks/useWriteHistory';
 import History from './History';
 import Field from './Field';
 import Button from './Button';
+import backspaceIcon from "../../assests/images/backspace.png";
 
 export default function Calculator() {
     const [field, symbolicField, fields, setField] = useField([]);
-    const [histories, setHistories] = useWriteHistory([]);
+    const [histories, setHistories, addHistory, clearHistories] = useWriteHistory([]);
 
     const checkEvaluateError = (value=null) => {
         const errorValues = [Infinity, -Infinity, NaN, null, undefined];
@@ -72,10 +73,11 @@ export default function Calculator() {
             const input = !!field.length ? field : "0";
             const value = evaluate(input);
             const values = value.split("");
-            addHistory(symbolicField, value);
+            addHistory(field, value, true);
             setField(values);
         } catch (err) {
             Alert.alert("Error", "Invalid math expression!");
+            console.log(err);
         }
     };
 
@@ -92,26 +94,17 @@ export default function Calculator() {
         const values = fields.slice(0, fields.length - 1);
         setField(values);
     };
- 
+
     const clearNumber = () => {
         const values = [];
-        mightClearHistory();
+        mightClearHistories();
         setField(values);
     };
 
-    const addHistory = (expression, answer) => {
-        const pair = [expression, answer];
-        const values = [...histories, pair];
-        setHistories(values);
-    };
-
-    const mightClearHistory = () => {
-        if (field) return;
-        clearHistory();
-    };
-
-    const clearHistory = () => {
-        setHistories([]);
+    const mightClearHistories = () => {
+        const isZeroField = field.split("").every((v) => v === "0");
+        if (!isZeroField) return;
+        clearHistories();
     };
 
     return (
@@ -120,8 +113,10 @@ export default function Calculator() {
             <Field value={symbolicField} placeholder="0" />
             <View style={styles.btnContainer}>
                 <View style={styles.btnRow}>
+                    <Button name="parenthesis" value="(" onPress={() => {addNumber("(")}} />
+                    <Button name="parenthesis" value=")" onPress={() => {addNumber(")")}} />
                     <Button name="remover" value="AC" onPress={clearNumber} />
-                    <Button name="remover" value="DEL" onPress={delNumber} />
+                    <Button name="remover" value="DEL" iconName="backspace" icon={backspaceIcon} onPress={delNumber} />
                 </View>
                 <View style={styles.btnRow}>
                     <Button name="number" value="7" onPress={() => {addNumber("7")}} />

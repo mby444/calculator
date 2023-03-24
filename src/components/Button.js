@@ -1,12 +1,33 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Image, Pressable, StyleSheet, Text } from 'react-native';
 
-export default function Button({ name="number", value="", onPress }){
+export default function Button({ name="number", value="", iconName="", icon=null, onPress }) {
+    // const getPressableStyles = () => {
+    //     const output = [styles[name]];
+    //     return output;
+    // };
+    
+    // const pressableStyles = getPressableStyles();
+    const styleObj = {
+        pressable() {
+            const output = [styles[name]];
+            iconName && icon ? output.push(styles[iconName + "IconContainer"]) : 0;
+            return output;
+        }
+    };
+
     return (
         <Pressable
-            style={styles[name]}
+            style={styleObj.pressable()}
             onPress={() => {onPress(value)}}
         >
-            <Text style={styles[name + "Text"]}>{value}</Text>
+            {
+                iconName && icon ? (
+                    <Image style={styles[iconName + "Icon"]} source={icon} /> 
+                    ) : (
+                    <Text style={styles[name + "Text"]}>{value}</Text>
+                )
+            }
+            {/* <Text style={styles[name + "Text"]}>{value}</Text> */}
         </Pressable>
     );
 }
@@ -24,10 +45,20 @@ const styles = StyleSheet.create({
         width: "25%"
     },
 
+    parenthesis: {
+        backgroundColor: "#a8a8a8",
+        paddingVertical: 22,
+        width: "25%"
+    },
+
     remover: {
         backgroundColor: "#a8a8a8",
         paddingVertical: 22,
-        width: "50%",
+        width: "25%",
+    },
+
+    backspaceIconContainer: {
+        alignItems: "center"
     },
 
     numberText: {
@@ -46,5 +77,16 @@ const styles = StyleSheet.create({
         color: "#000",
         textAlign: "center",
         fontSize: 22
+    },
+
+    parenthesisText: {
+        color: "#000",
+        textAlign: "center",
+        fontSize: 22
+    },
+
+    backspaceIcon: {
+        width: 30,
+        height: 30
     }
 });
