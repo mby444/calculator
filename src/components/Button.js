@@ -1,12 +1,6 @@
 import { Image, Pressable, StyleSheet, Text } from 'react-native';
 
 export default function Button({ name="number", value="", iconName="", icon=null, onPress }) {
-    // const getPressableStyles = () => {
-    //     const output = [styles[name]];
-    //     return output;
-    // };
-    
-    // const pressableStyles = getPressableStyles();
     const styleObj = {
         pressable() {
             const output = [styles[name]];
@@ -27,7 +21,6 @@ export default function Button({ name="number", value="", iconName="", icon=null
                     <Text style={styles[name + "Text"]}>{value}</Text>
                 )
             }
-            {/* <Text style={styles[name + "Text"]}>{value}</Text> */}
         </Pressable>
     );
 }
@@ -47,14 +40,18 @@ const styles = StyleSheet.create({
 
     parenthesis: {
         backgroundColor: "#a8a8a8",
-        paddingVertical: 22,
-        width: "25%"
+        // paddingVertical: 22,
+        width: "25%",
+        height: 70,
+        justifyContent: "center"
     },
 
     remover: {
         backgroundColor: "#a8a8a8",
-        paddingVertical: 22,
+        // paddingVertical: 22,
         width: "25%",
+        height: 70,
+        justifyContent: "center"
     },
 
     backspaceIconContainer: {

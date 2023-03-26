@@ -12,7 +12,8 @@ export default function History({ values=[] }) {
             if (!(v in symbolObj)) return v;
             return symbolObj[v]; 
         }).join("");
-        return newValue;
+        const output = newValue ? newValue : "0";
+        return output;
     };
 
     return (
@@ -28,9 +29,6 @@ export default function History({ values=[] }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // height: "30%"
-    },
     subcontainer: {
         paddingVertical: 2
     },

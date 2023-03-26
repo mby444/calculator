@@ -113,10 +113,10 @@ export default function Calculator() {
             <Field value={symbolicField} placeholder="0" />
             <View style={styles.btnContainer}>
                 <View style={styles.btnRow}>
-                    <Button name="parenthesis" value="(" onPress={() => {addNumber("(")}} />
-                    <Button name="parenthesis" value=")" onPress={() => {addNumber(")")}} />
                     <Button name="remover" value="AC" onPress={clearNumber} />
                     <Button name="remover" value="DEL" iconName="backspace" icon={backspaceIcon} onPress={delNumber} />
+                    <Button name="parenthesis" value="(" onPress={() => {addNumber("(")}} />
+                    <Button name="parenthesis" value=")" onPress={() => {addNumber(")")}} />
                 </View>
                 <View style={styles.btnRow}>
                     <Button name="number" value="7" onPress={() => {addNumber("7")}} />
